@@ -11,10 +11,11 @@
         android:layout_height="42dp"
         android:background="@drawable/category_bg"
         android:padding="10dp"
-        android:tint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_investment" />
+        app:srcCompat="@drawable/ic_investment"
+        app:tint="@color/white"
+        tools:ignore="MissingConstraints" />
 
     <TextView
         android:id="@+id/categoryText"

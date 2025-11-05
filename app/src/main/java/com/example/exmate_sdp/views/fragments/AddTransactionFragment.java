@@ -1,15 +1,13 @@
-     package com.example.exmate_sdp;
+     package com.example.exmate_sdp.views.fragments;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
 
+import com.example.exmate_sdp.R;
 import com.example.exmate_sdp.databinding.FragmentAddTransactionBinding;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
@@ -70,6 +68,7 @@ import java.util.Calendar;
                 datePickerDialog.show();
             }
         });
+
 
         return binding.getRoot();
     }

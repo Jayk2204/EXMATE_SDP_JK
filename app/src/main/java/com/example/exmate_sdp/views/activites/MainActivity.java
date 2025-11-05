@@ -1,14 +1,12 @@
-package com.example.exmate_sdp;
+package com.example.exmate_sdp.views.activites;
 
 import android.os.Bundle;
 import android.view.Menu;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
+import com.example.exmate_sdp.views.fragments.AddTransactionFragment;
+import com.example.exmate_sdp.R;
 import com.example.exmate_sdp.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {

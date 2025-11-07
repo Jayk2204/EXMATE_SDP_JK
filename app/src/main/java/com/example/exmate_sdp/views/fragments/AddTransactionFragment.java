@@ -1,18 +1,28 @@
      package com.example.exmate_sdp.views.fragments;
 
-import android.app.DatePickerDialog;
-import android.os.Bundle;
+     import android.app.AlertDialog;
+     import android.app.DatePickerDialog;
+     import android.os.Bundle;
+     import android.view.LayoutInflater;
+     import android.view.View;
+     import android.view.ViewGroup;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+     import androidx.recyclerview.widget.DividerItemDecoration;
+     import androidx.recyclerview.widget.GridLayoutManager;
+     import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.example.exmate_sdp.R;
-import com.example.exmate_sdp.databinding.FragmentAddTransactionBinding;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+     import com.example.exmate_sdp.R;
+     import com.example.exmate_sdp.adapters.AccountsAdapter;
+     import com.example.exmate_sdp.adapters.CategoryAdapter;
+     import com.example.exmate_sdp.databinding.FragmentAddTransactionBinding;
+     import com.example.exmate_sdp.databinding.ListDialogBinding;
+     import com.example.exmate_sdp.models.Account;
+     import com.example.exmate_sdp.models.Category;
+     import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+     import java.text.SimpleDateFormat;
+     import java.util.ArrayList;
+     import java.util.Calendar;
 
 
      public class AddTransactionFragment extends BottomSheetDialogFragment {
@@ -68,7 +78,61 @@ import java.util.Calendar;
                 datePickerDialog.show();
             }
         });
+        binding.category.setOnClickListener(c->
+        {
+            ListDialogBinding dialogBinding=ListDialogBinding.inflate(inflater);
+            AlertDialog categoryDialog= new AlertDialog.Builder(getContext()).create();
+            categoryDialog.setView(dialogBinding.getRoot());
 
+            ArrayList<Category>categories=new ArrayList<>();
+            categories.add(new Category("Salary",R.drawable.ic_salary,R.color.category1));
+            categories.add(new Category("Business",R.drawable.ic_business,R.color.category2));
+            categories.add(new Category("Investment",R.drawable.ic_investment,R.color.category3));
+            categories.add(new Category("Loan",R.drawable.ic_loan,R.color.category4));
+            categories.add(new Category("Rent",R.drawable.ic_rent,R.color.category5));
+            categories.add(new Category("Others",R.drawable.ic_other,R.color.category6));
+
+            CategoryAdapter categoryAdapter=new CategoryAdapter(getContext(), categories, new CategoryAdapter.CategoryClickListner() {
+                @Override
+                public void onCategoryClicked(Category category) {
+                    binding.category.setText(category.getCategoryName());
+                    categoryDialog.dismiss();
+                }
+            });
+            dialogBinding.recyclerView.setLayoutManager(new GridLayoutManager(getContext(),3));
+            dialogBinding.recyclerView.setAdapter(categoryAdapter);
+            categoryDialog.show();
+
+
+
+        });
+
+        binding.account.setOnClickListener(c->
+        {
+            ListDialogBinding dialogBinding=ListDialogBinding.inflate(inflater);
+            AlertDialog accountsDialog= new AlertDialog.Builder(getContext()).create();
+            accountsDialog.setView(dialogBinding.getRoot());
+
+            ArrayList<Account> accounts=new ArrayList<>();
+            accounts.add(new Account(0,"Cash"));
+            accounts.add(new Account(0,"Credit Card"));
+            accounts.add(new Account(0,"Debit Card"));
+            accounts.add(new Account(0,"Paytm"));
+            accounts.add(new Account(0,"Others"));
+
+            AccountsAdapter adapter=new AccountsAdapter(getContext(), accounts, new AccountsAdapter.AccountsClickListner() {
+                @Override
+                public void onAccountSelected(Account account) {
+                    binding.account.setText(account.getAccountName());
+                    accountsDialog.dismiss();
+                }
+            });
+            dialogBinding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            dialogBinding.recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
+            dialogBinding.recyclerView.setAdapter(adapter);
+            accountsDialog.show();
+
+        });
 
         return binding.getRoot();
     }

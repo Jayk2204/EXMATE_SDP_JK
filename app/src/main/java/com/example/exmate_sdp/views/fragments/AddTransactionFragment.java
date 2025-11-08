@@ -18,6 +18,8 @@
      import com.example.exmate_sdp.databinding.ListDialogBinding;
      import com.example.exmate_sdp.models.Account;
      import com.example.exmate_sdp.models.Category;
+     import com.example.exmate_sdp.utils.Constants;
+     import com.example.exmate_sdp.utils.Helper;
      import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
      import java.text.SimpleDateFormat;
@@ -70,7 +72,7 @@
                     calendar.set(Calendar.YEAR,datePicker.getYear());
 
                     SimpleDateFormat dateFormat=new SimpleDateFormat("dd/MM/yyyy");
-                    String dateToShow=dateFormat.format(calendar.getTime());
+                    String dateToShow= Helper.formatDate(calendar.getTime());
                     binding.date.setText(dateToShow);
 
 
@@ -84,15 +86,9 @@
             AlertDialog categoryDialog= new AlertDialog.Builder(getContext()).create();
             categoryDialog.setView(dialogBinding.getRoot());
 
-            ArrayList<Category>categories=new ArrayList<>();
-            categories.add(new Category("Salary",R.drawable.ic_salary,R.color.category1));
-            categories.add(new Category("Business",R.drawable.ic_business,R.color.category2));
-            categories.add(new Category("Investment",R.drawable.ic_investment,R.color.category3));
-            categories.add(new Category("Loan",R.drawable.ic_loan,R.color.category4));
-            categories.add(new Category("Rent",R.drawable.ic_rent,R.color.category5));
-            categories.add(new Category("Others",R.drawable.ic_other,R.color.category6));
 
-            CategoryAdapter categoryAdapter=new CategoryAdapter(getContext(), categories, new CategoryAdapter.CategoryClickListner() {
+
+            CategoryAdapter categoryAdapter=new CategoryAdapter(getContext(), Constants.categories, new CategoryAdapter.CategoryClickListner() {
                 @Override
                 public void onCategoryClicked(Category category) {
                     binding.category.setText(category.getCategoryName());

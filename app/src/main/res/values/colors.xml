@@ -4,6 +4,10 @@
     <color name="white">#FFFFFFFF</color>
     <color name="orangeDark">#831109</color>
     <color name="orange">#F44336</color>
+    <color name="orangeLight">#fecdc0</color>
+    <color name="orangeMid">#fecdc0</color>
+    <color name="LightOrange">#feecec</color>
+    <color name="Grey">#d7d6d7</color>
     <color name="textColor">#353535
     </color>
     <color name="greenColor">#4CAF50</color>

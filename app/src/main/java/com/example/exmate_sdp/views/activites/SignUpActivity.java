@@ -21,58 +21,58 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText signupEmail, signupPassword, signupName, signupCPassword;
     private Button signupButton;
 
-
-
-    protected void OnCreate(Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {   // FIXED
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-        auth=FirebaseAuth.getInstance();
-        signupEmail=findViewById(R.id.signup_email);
-        signupPassword=findViewById(R.id.signup_password);
-        signupButton=findViewById(R.id.signup_button);
 
-        signupButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        String user=signupEmail.getText().toString().trim();
-                        String pass=signupPassword.getText().toString().trim();
+        auth = FirebaseAuth.getInstance();
 
-                        if(user.isEmpty())
-                        {
-                            signupEmail.setError("Enter Email");
-                            signupEmail.requestFocus();
-                        }
-                        if (pass.isEmpty())
-                        {
-                            signupPassword.setError("Enter Password");
-                            signupPassword.requestFocus();
-                        }
-                       else
-                        {
-                            auth.createUserWithEmailAndPassword(user,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if(task.isSuccessful())
-                                    {
-                                        Toast.makeText(SignUpActivity.this,"User Created",Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(SignUpActivity.this,LoginActivity.class));
-                                        finish();
-                                    }
-                                    else
-                                    {
-                                        Toast.makeText(SignUpActivity.this,"User Not Created",Toast.LENGTH_SHORT).show();
-                                    }
+        signupName = findViewById(R.id.signup_Name);
+        signupEmail = findViewById(R.id.signup_email);
+        signupPassword = findViewById(R.id.signup_password);
+        signupCPassword = findViewById(R.id.signup_cpassword);
+        signupButton = findViewById(R.id.signup_button);
 
+        signupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String user = signupEmail.getText().toString().trim();
+                String pass = signupPassword.getText().toString().trim();
+                String cpass = signupCPassword.getText().toString().trim();
 
-                                }
-                            });
-
-                        }
-
-                    }
+                if (user.isEmpty()) {
+                    signupEmail.setError("Enter Email");
+                    signupEmail.requestFocus();
+                    return;
                 }
-        );
 
+                if (pass.isEmpty()) {
+                    signupPassword.setError("Enter Password");
+                    signupPassword.requestFocus();
+                    return;
+                }
+
+                if (!pass.equals(cpass)) {
+                    signupCPassword.setError("Passwords do not match");
+                    signupCPassword.requestFocus();
+                    return;
+                }
+
+                auth.createUserWithEmailAndPassword(user, pass)
+                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(SignUpActivity.this, "User Created", Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
+
+                                } else {
+                                    Toast.makeText(SignUpActivity.this, "User Not Created", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+            }
+        });
     }
 }

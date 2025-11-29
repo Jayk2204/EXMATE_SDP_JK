@@ -11,18 +11,30 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.EXMATE_SDP">
+
+        <!-- Make SignupActivity the first screen -->
         <activity
-            android:name=".views.activites.MainActivity"
+            android:name=".views.activites.SignUpActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- MainActivity without launcher -->
+        <activity
+            android:name=".views.activites.MainActivity"
+            android:exported="true" />
+        <activity
+            android:name=".views.activites.LoginActivity"
+            android:exported="true" />
+
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
     </application>
 
 </manifest>

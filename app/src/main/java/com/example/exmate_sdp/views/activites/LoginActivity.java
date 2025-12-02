@@ -22,8 +22,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.exmate_sdp.R;
+import com.example.exmate_sdp.models.User;
 import com.example.exmate_sdp.views.animations.ParticleView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -33,7 +36,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button loginBtn;
     private TextView signupText, loginTitle, appName, tagline;
 
-    private TextView forgotPasswordText;   // ⭐ Added
+    private TextView forgotPasswordText;
 
     private LinearLayout loginCard;
     private RelativeLayout loginRoot;
@@ -54,8 +57,7 @@ public class LoginActivity extends AppCompatActivity {
         loginBtn = findViewById(R.id.login_Button);
         signupText = findViewById(R.id.signupredirecttext);
         loginTitle = findViewById(R.id.loginTitle);
-
-        forgotPasswordText = findViewById(R.id.forgotPasswordText); // ⭐ Added
+        forgotPasswordText = findViewById(R.id.forgotPasswordText);
 
         loginCard = findViewById(R.id.loginCard);
         loginRoot = findViewById(R.id.loginRoot);
@@ -86,9 +88,7 @@ public class LoginActivity extends AppCompatActivity {
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         });
 
-        // -----------------------------------------------------------
-        // ⭐ FORGOT PASSWORD FUNCTIONALITY
-        // -----------------------------------------------------------
+        // FORGOT PASSWORD
         forgotPasswordText.setOnClickListener(v -> {
             forgotPasswordText.startAnimation(AnimationUtils.loadAnimation(this, R.anim.pulse));
 
@@ -122,6 +122,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     // -----------------------------------------------------------
+
     private void startParticles() {
         if (particleView != null) {
             particleView.startAnimation();
@@ -222,6 +223,9 @@ public class LoginActivity extends AppCompatActivity {
         loader.setCancelable(false);
     }
 
+    // -----------------------------------------------------------
+    // ⭐ UPDATED LOGIN (NO DELETE USER)
+    // -----------------------------------------------------------
     private void loginUser() {
 
         String userEmail = email.getText().toString().trim();
@@ -250,9 +254,37 @@ public class LoginActivity extends AppCompatActivity {
         auth.signInWithEmailAndPassword(userEmail, userPass)
                 .addOnCompleteListener(task -> {
 
-                    loader.dismiss();
-
                     if (task.isSuccessful()) {
+
+                        FirebaseUser user = auth.getCurrentUser();
+
+                        // 🔥 CHECK EMAIL VERIFICATION
+                        if (!user.isEmailVerified()) {
+
+                            loader.dismiss();
+
+                            auth.signOut();
+
+                            Toast.makeText(this,
+                                    "Please verify your email before login.",
+                                    Toast.LENGTH_LONG).show();
+
+                            return;
+                        }
+
+                        // Email verified → NOW create user in RTDB
+                        String uid = user.getUid();
+
+                        User userObj = new User(
+                                user.getDisplayName() == null ? "User" : user.getDisplayName(),
+                                user.getEmail()
+                        );
+
+                        FirebaseDatabase.getInstance().getReference("Users")
+                                .child(uid)
+                                .setValue(userObj);
+
+                        loader.dismiss();
 
                         Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show();
 
@@ -261,6 +293,7 @@ public class LoginActivity extends AppCompatActivity {
                         finish();
 
                     } else {
+                        loader.dismiss();
                         Toast.makeText(this, "Invalid email or password", Toast.LENGTH_SHORT).show();
                     }
                 });

@@ -49,7 +49,6 @@
         android:layout_height="match_parent"
         android:layout_marginTop="140dp">
 
-        <!-- GLASS CARD -->
         <LinearLayout
             android:id="@+id/signupCard"
             android:layout_width="match_parent"
@@ -78,7 +77,7 @@
                 android:shadowDy="3"
                 android:shadowRadius="6" />
 
-            <!-- NAME FIELD -->
+            <!-- NAME LABEL -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -89,6 +88,7 @@
                 android:layout_marginTop="20dp"
                 android:fontFamily="sans-serif-medium" />
 
+            <!-- NAME INPUT -->
             <EditText
                 android:id="@+id/signup_Name"
                 android:layout_width="match_parent"
@@ -99,7 +99,7 @@
                 android:textColorHint="#777"
                 android:background="@drawable/neon_edittext" />
 
-            <!-- EMAIL -->
+            <!-- EMAIL LABEL -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -110,6 +110,7 @@
                 android:layout_marginTop="18dp"
                 android:fontFamily="sans-serif-medium" />
 
+            <!-- EMAIL INPUT -->
             <EditText
                 android:id="@+id/signup_email"
                 android:layout_width="match_parent"
@@ -120,7 +121,7 @@
                 android:textColorHint="#777"
                 android:background="@drawable/neon_edittext" />
 
-            <!-- PASSWORD -->
+            <!-- PASSWORD LABEL -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -131,6 +132,7 @@
                 android:layout_marginTop="18dp"
                 android:fontFamily="sans-serif-medium" />
 
+            <!-- PASSWORD INPUT -->
             <EditText
                 android:id="@+id/signup_password"
                 android:layout_width="match_parent"
@@ -142,7 +144,7 @@
                 android:inputType="textPassword"
                 android:background="@drawable/neon_edittext" />
 
-            <!-- CONFIRM PASSWORD -->
+            <!-- CONFIRM PASSWORD LABEL -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -153,6 +155,7 @@
                 android:layout_marginTop="18dp"
                 android:fontFamily="sans-serif-medium" />
 
+            <!-- CONFIRM PASSWORD INPUT -->
             <EditText
                 android:id="@+id/signup_cpassword"
                 android:layout_width="match_parent"
@@ -174,7 +177,9 @@
                 android:textStyle="bold"
                 android:fontFamily="sans-serif-medium"
                 android:background="@drawable/orange_btn"
-                android:layout_marginTop="30dp" />
+                android:layout_marginTop="22dp" />   <!-- Reduced from 30dp to 22dp -->
+
+
 
             <!-- LOGIN REDIRECT -->
             <TextView
@@ -184,13 +189,24 @@
                 android:text="Already have an account? Login"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"
-                android:padding="6dp"
-                android:layout_marginTop="16dp"
-                android:fontFamily="sans-serif-medium" />
+                android:padding="4dp"
+                android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:fontFamily="sans-serif-medium" />
+            <!-- EMAIL VERIFICATION INFO -->
+            <TextView
+                android:id="@+id/verificationInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Verification email sent! Please check your inbox."
+                android:textColor="#FFAB66"
+                android:textSize="15sp"
+                android:fontFamily="sans-serif-medium"
+                android:padding="4dp"
+                android:layout_marginTop="8dp"
+                android:alpha="0" />
 
         </LinearLayout>
     </ScrollView>
-
-    <!-- BOTTOM WAVE -->
 
 </RelativeLayout>

@@ -18,10 +18,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.exmate_sdp.R;
-import com.example.exmate_sdp.models.User;
 import com.example.exmate_sdp.views.animations.ParticleView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -29,7 +27,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     private EditText signupEmail, signupPassword, signupName, signupCPassword;
     private Button signupButton;
-    private TextView loginRedirect, appName, tagline, signupTitle;
+    private TextView loginRedirect, appName, tagline, signupTitle, verificationInfo;
 
     private LinearLayout signupCard;
     private RelativeLayout signupRoot;
@@ -44,9 +42,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
 
-        // ---------------------------
         // FIND VIEWS
-        // ---------------------------
         signupRoot = findViewById(R.id.signupRoot);
         particleView = findViewById(R.id.particleView);
 
@@ -63,18 +59,15 @@ public class SignUpActivity extends AppCompatActivity {
         signupButton = findViewById(R.id.signup_button);
         loginRedirect = findViewById(R.id.loginredirecttext);
 
-        // Loader
-        setupLoader();
+        verificationInfo = findViewById(R.id.verificationInfo);
 
-        // UI Animations
+        setupLoader();
         startIntroAnimations();
         applyGradient(appName);
         applyGradient(signupTitle);
-
         setup3DCardAnimation();
         setupButtonBounce();
 
-        // ACTIONS
         signupButton.setOnClickListener(v -> registerUser());
 
         loginRedirect.setOnClickListener(v -> {
@@ -85,12 +78,8 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
-    // -------------------------------------------------------
-    // PREMIUM INTRO ANIMATIONS
-    // -------------------------------------------------------
     private void startIntroAnimations() {
 
-        // EXMATE Title
         appName.setAlpha(0f);
         appName.setScaleX(0.6f);
         appName.setScaleY(0.6f);
@@ -102,7 +91,6 @@ public class SignUpActivity extends AppCompatActivity {
                 .setStartDelay(150)
                 .start();
 
-        // Tagline
         tagline.setAlpha(0f);
         tagline.setTranslationY(20);
         tagline.animate()
@@ -112,7 +100,6 @@ public class SignUpActivity extends AppCompatActivity {
                 .setStartDelay(550)
                 .start();
 
-        // Card
         signupCard.setAlpha(0f);
         signupCard.setTranslationY(60);
         signupCard.animate()
@@ -123,9 +110,6 @@ public class SignUpActivity extends AppCompatActivity {
                 .start();
     }
 
-    // -------------------------------------------------------
-    // GRADIENT TEXT
-    // -------------------------------------------------------
     private void applyGradient(TextView tv) {
         tv.post(() -> {
             Shader shader = new LinearGradient(
@@ -138,9 +122,6 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
-    // -------------------------------------------------------
-    // 3D PARALLAX CARD
-    // -------------------------------------------------------
     private void setup3DCardAnimation() {
         signupCard.setOnTouchListener((v, event) -> {
 
@@ -160,9 +141,6 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
-    // -------------------------------------------------------
-    // BUTTON BOUNCE
-    // -------------------------------------------------------
     private void setupButtonBounce() {
         signupButton.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -174,9 +152,6 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
-    // -------------------------------------------------------
-    // PREMIUM LOADER
-    // -------------------------------------------------------
     private void setupLoader() {
         loader = new Dialog(this);
         loader.setContentView(R.layout.exmate_loader);
@@ -185,7 +160,7 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     // -------------------------------------------------------
-    // FIREBASE SIGNUP
+    // FIXED SIGNUP (DO NOT DELETE USER)
     // -------------------------------------------------------
     private void registerUser() {
 
@@ -207,24 +182,24 @@ public class SignUpActivity extends AppCompatActivity {
         auth.createUserWithEmailAndPassword(email, pass)
                 .addOnCompleteListener(task -> {
 
-                    loader.dismiss();
-
                     if (task.isSuccessful()) {
 
-                        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                        User user = new User(name, email);
+                        auth.getCurrentUser().sendEmailVerification();
 
-                        FirebaseDatabase.getInstance().getReference("Users")
-                                .child(uid)
-                                .setValue(user);
+                        loader.dismiss();
 
-                        Toast.makeText(this, "Account Created", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this,
+                                "Verification email sent! Please verify and then login.",
+                                Toast.LENGTH_LONG).show();
+
+                        // LOGOUT USER (BUT DO NOT DELETE)
+                        auth.signOut();
 
                         startActivity(new Intent(this, LoginActivity.class));
-                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         finish();
 
                     } else {
+                        loader.dismiss();
                         Toast.makeText(this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });

@@ -1,23 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:background="@drawable/exmate_glass_bg"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:elevation="20dp">
+    android:padding="28dp"
+    android:gravity="center"
+    android:background="@drawable/glass_3d_card">
 
     <ImageView
-        android:layout_width="85dp"
-        android:layout_height="85dp"
-        android:src="@drawable/exmate_glow_ring" />
+        android:id="@+id/loaderIcon"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:src="@drawable/loader_ring"
+        android:layout_centerInParent="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Setting things up..."
-        android:textColor="#FF6F00"
-        android:textStyle="bold"
-        android:paddingTop="14dp"
-        android:textSize="17sp"/>
-</LinearLayout>
+</RelativeLayout>

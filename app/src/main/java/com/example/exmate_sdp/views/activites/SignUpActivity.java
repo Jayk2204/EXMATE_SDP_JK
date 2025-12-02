@@ -4,12 +4,14 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.MotionEvent;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -27,7 +29,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     private EditText signupEmail, signupPassword, signupName, signupCPassword;
     private Button signupButton;
-    private TextView loginRedirect, appName, tagline, signupTitle, verificationInfo;
+    private TextView loginRedirect, appName, tagline, signupTitle;
 
     private LinearLayout signupCard;
     private RelativeLayout signupRoot;
@@ -59,8 +61,6 @@ public class SignUpActivity extends AppCompatActivity {
         signupButton = findViewById(R.id.signup_button);
         loginRedirect = findViewById(R.id.loginredirecttext);
 
-        verificationInfo = findViewById(R.id.verificationInfo);
-
         setupLoader();
         startIntroAnimations();
         applyGradient(appName);
@@ -76,6 +76,17 @@ public class SignUpActivity extends AppCompatActivity {
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             finish();
         });
+    }
+
+    // POPUP (NEW)
+    private void showVerificationPopup() {
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.verification_popup);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        dialog.show();
+
+        // Auto close after 2 sec
+        new android.os.Handler().postDelayed(dialog::dismiss, 2000);
     }
 
     private void startIntroAnimations() {
@@ -157,11 +168,14 @@ public class SignUpActivity extends AppCompatActivity {
         loader.setContentView(R.layout.exmate_loader);
         loader.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         loader.setCancelable(false);
+
+        ImageView icon = loader.findViewById(R.id.loaderIcon);
+        icon.startAnimation(AnimationUtils.loadAnimation(this, R.anim.rotate));
     }
 
-    // -------------------------------------------------------
-    // FIXED SIGNUP (DO NOT DELETE USER)
-    // -------------------------------------------------------
+
+
+    // FIXED SIGNUP (WITH POPUP)
     private void registerUser() {
 
         String name = signupName.getText().toString().trim();
@@ -169,7 +183,7 @@ public class SignUpActivity extends AppCompatActivity {
         String pass = signupPassword.getText().toString().trim();
         String cpass = signupCPassword.getText().toString().trim();
 
-        // VALIDATIONS
+        // VALIDATION
         if (name.isEmpty()) { signupName.setError("Enter your name"); signupName.requestFocus(); return; }
         if (email.isEmpty()) { signupEmail.setError("Enter your email"); signupEmail.requestFocus(); return; }
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) { signupEmail.setError("Invalid email"); return; }
@@ -188,17 +202,18 @@ public class SignUpActivity extends AppCompatActivity {
 
                         loader.dismiss();
 
-                        Toast.makeText(this,
-                                "Verification email sent! Please verify and then login.",
-                                Toast.LENGTH_LONG).show();
+                        // SHOW POPUP
+                        showVerificationPopup();
 
-                        // LOGOUT USER (BUT DO NOT DELETE)
-                        auth.signOut();
-
-                        startActivity(new Intent(this, LoginActivity.class));
-                        finish();
+                        // Logout & redirect after popup
+                        new android.os.Handler().postDelayed(() -> {
+                            auth.signOut();
+                            startActivity(new Intent(this, LoginActivity.class));
+                            finish();
+                        }, 2200);
 
                     } else {
+
                         loader.dismiss();
                         Toast.makeText(this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
                     }

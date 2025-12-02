@@ -13,6 +13,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -221,7 +222,11 @@ public class LoginActivity extends AppCompatActivity {
         loader.setContentView(R.layout.exmate_loader);
         loader.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         loader.setCancelable(false);
+
+        ImageView icon = loader.findViewById(R.id.loaderIcon);
+        icon.startAnimation(AnimationUtils.loadAnimation(this, R.anim.rotate));
     }
+
 
     // -----------------------------------------------------------
     // ⭐ UPDATED LOGIN (NO DELETE USER)

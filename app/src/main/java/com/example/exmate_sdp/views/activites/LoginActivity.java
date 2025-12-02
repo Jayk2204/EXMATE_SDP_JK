@@ -33,10 +33,12 @@ public class LoginActivity extends AppCompatActivity {
     private Button loginBtn;
     private TextView signupText, loginTitle, appName, tagline;
 
+    private TextView forgotPasswordText;   // ⭐ Added
+
     private LinearLayout loginCard;
     private RelativeLayout loginRoot;
 
-    private ParticleView particleView;   // ⭐ Particle View
+    private ParticleView particleView;
 
     private FirebaseAuth auth;
 
@@ -47,29 +49,29 @@ public class LoginActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
 
-        // UI elements
         email = findViewById(R.id.login_email);
         pass = findViewById(R.id.login_password);
         loginBtn = findViewById(R.id.login_Button);
         signupText = findViewById(R.id.signupredirecttext);
         loginTitle = findViewById(R.id.loginTitle);
+
+        forgotPasswordText = findViewById(R.id.forgotPasswordText); // ⭐ Added
+
         loginCard = findViewById(R.id.loginCard);
         loginRoot = findViewById(R.id.loginRoot);
 
-        // Premium App Branding
         appName = findViewById(R.id.appName);
         tagline = findViewById(R.id.tagline);
 
-        // Particle background view
         particleView = findViewById(R.id.particleView);
 
         setupLoader();
 
         startPremiumBackground();
-        startParticles();           // ⭐ Particle Animation
+        startParticles();
 
-        animateAppName();           // EXMATE text animation
-        animateTagline();           // Tagline fade slide
+        animateAppName();
+        animateTagline();
         applyGradient(appName);
         applyGradient(loginTitle);
 
@@ -83,22 +85,49 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         });
+
+        // -----------------------------------------------------------
+        // ⭐ FORGOT PASSWORD FUNCTIONALITY
+        // -----------------------------------------------------------
+        forgotPasswordText.setOnClickListener(v -> {
+            forgotPasswordText.startAnimation(AnimationUtils.loadAnimation(this, R.anim.pulse));
+
+            String userEmail = email.getText().toString().trim();
+
+            if (userEmail.isEmpty()) {
+                email.setError("Enter your email first");
+                email.requestFocus();
+                return;
+            }
+
+            if (!Patterns.EMAIL_ADDRESS.matcher(userEmail).matches()) {
+                email.setError("Invalid email");
+                email.requestFocus();
+                return;
+            }
+
+            loader.show();
+
+            auth.sendPasswordResetEmail(userEmail)
+                    .addOnCompleteListener(task -> {
+                        loader.dismiss();
+
+                        if (task.isSuccessful()) {
+                            Toast.makeText(this, "Password reset email sent!", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(this, "Failed to send reset email", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        });
     }
 
-
-    // -----------------------------------------------------------
-    // START PARTICLE ANIMATION
     // -----------------------------------------------------------
     private void startParticles() {
         if (particleView != null) {
-            particleView.startAnimation();   // Now works because we added in class ✔
+            particleView.startAnimation();
         }
     }
 
-
-    // -----------------------------------------------------------
-    // PREMIUM GRADIENT BACKGROUND
-    // -----------------------------------------------------------
     private void startPremiumBackground() {
         Drawable bg = ContextCompat.getDrawable(this, R.drawable.premium_bg);
 
@@ -112,10 +141,6 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-
-    // -----------------------------------------------------------
-    // Animate EXMATE Logo
-    // -----------------------------------------------------------
     private void animateAppName() {
 
         Animation bubble = AnimationUtils.loadAnimation(this, R.anim.exmate_pop);
@@ -134,10 +159,6 @@ public class LoginActivity extends AppCompatActivity {
                 .start();
     }
 
-
-    // -----------------------------------------------------------
-    // Tagline animation
-    // -----------------------------------------------------------
     private void animateTagline() {
         tagline.setAlpha(0f);
         tagline.setTranslationY(20);
@@ -150,10 +171,6 @@ public class LoginActivity extends AppCompatActivity {
                 .start();
     }
 
-
-    // -----------------------------------------------------------
-    // Gradient Text for Titles
-    // -----------------------------------------------------------
     private void applyGradient(TextView text) {
         text.post(() -> {
             Shader shader = new LinearGradient(
@@ -166,10 +183,6 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-
-    // -----------------------------------------------------------
-    // 3D Parallax Motion
-    // -----------------------------------------------------------
     private void setup3DMotion() {
         loginCard.setOnTouchListener((v, event) -> {
 
@@ -190,10 +203,6 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-
-    // -----------------------------------------------------------
-    // Button Click Bounce Animation
-    // -----------------------------------------------------------
     private void setupButtonAnimation() {
         loginBtn.setOnTouchListener((v, event) -> {
 
@@ -206,10 +215,6 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-
-    // -----------------------------------------------------------
-    // Loader
-    // -----------------------------------------------------------
     private void setupLoader() {
         loader = new Dialog(this);
         loader.setContentView(R.layout.exmate_loader);
@@ -217,10 +222,6 @@ public class LoginActivity extends AppCompatActivity {
         loader.setCancelable(false);
     }
 
-
-    // -----------------------------------------------------------
-    // Firebase Login Logic
-    // -----------------------------------------------------------
     private void loginUser() {
 
         String userEmail = email.getText().toString().trim();
